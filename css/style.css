@@ -1,0 +1,130 @@
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  background: #56CCF2;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #2F80ED, #56CCF2);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #2F80ED, #56CCF2); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  font-family: 'Acme', sans-serif;
+}
+
+#welcomeMessage {
+  margin-left: 15px;
+  margin-top: 8px;
+  vertical-align: middle;
+  font-size: 48px;
+}
+
+#entirePage {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+
+#header {
+  display: flex;
+}
+
+#main {
+  display: flex;
+  height: 92%;
+}
+
+#foldersDiv {
+  width: 20%;
+  max-width: 250px;
+  border: 1px solid black;
+}
+
+#foldersDiv tr td {
+  padding: 0;
+  border: none
+}
+
+#folderTable tr td {
+    font-size: 19px;
+    padding: 4px;
+}
+
+#composeNewMsg {
+  font-size: 15px;
+}
+
+#folderTable tr:hover {
+    background-color: rgba(255,255,255, 0.6);
+}
+
+.emailLine:hover {
+  background-color: rgba(255,255,255, 0.5);
+}
+
+#emailDiv {
+  width: 80%;
+  border: 1px solid rgba(255,255,255, 0.5);
+}
+
+/*table headers*/
+table {
+  width: 100%;
+}
+
+#emailTable {
+  width: 100%;
+  white-space: nowrap;
+  table-layout: fixed;
+}
+
+#emailTableHeader {
+  width: 100%;
+}
+
+#fromHeader {
+  width: 20%;
+}
+
+#subjectHeader {
+  width: 65%;
+}
+
+#dateHeader {
+  width: 15%;
+}
+
+#preview {
+  font-size: 13px;
+}
+
+th {
+  font-size: 24px;
+  background-color: rgba(255,255,255, 0.7);
+}
+
+td {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.emailMsgOff {
+  position: absolute;
+  height: 88%;
+  width: 80%;
+  right: -80%;
+  top: 70px;
+}
+
+.emailMsgOn {
+  border-radius: 10px;
+  background: white;
+  padding: 15px;
+  opacity: 0.95;
+  position: absolute;
+  height: 88%;
+  width: 62%;
+  left: 35%;
+  top: 70px;
+}

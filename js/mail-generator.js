@@ -13,7 +13,6 @@ var emails = [
         second: 23,
         millisecond: 999
       },
-      dateStamp: 20160724232323999,
       folder: 'inbox'
     },
     {
@@ -30,7 +29,6 @@ var emails = [
         second: 65,
         millisecond: 795
       },
-      dateStamp: 20160807001065795,
       folder: 'inbox'
     },
     {
@@ -47,7 +45,6 @@ var emails = [
         second: 55,
         millisecond: 111
       },
-      dateStamp: 20160920113055111,
       folder: 'inbox'
     },
     {
@@ -64,7 +61,6 @@ var emails = [
         second: 20,
         millisecond: 100
       },
-      dateStamp: 20170107043020100,
       folder: 'inbox'
     },
     {
@@ -81,7 +77,6 @@ var emails = [
         second: 40,
         millisecond: 735
       },
-      dateStamp: 20170214055140735,
       folder: 'inbox'
     },
     {
@@ -98,7 +93,6 @@ var emails = [
         second: 41,
         millisecond: 745
       },
-      dateStamp: 20170315065841745,
       folder: 'inbox'
     },
     {
@@ -115,7 +109,6 @@ var emails = [
         second: 40,
         millisecond: 735
       },
-      dateStamp: 20170220115140735,
       folder: 'inbox'
     },
     {
@@ -132,7 +125,6 @@ var emails = [
         second: 40,
         millisecond: 735
       },
-      dateStamp: 20170502105140735,
       folder: 'inbox'
     },
     {
@@ -149,7 +141,6 @@ var emails = [
         second: 40,
         millisecond: 700
       },
-      dateStamp: 20170214051040700,
       folder: 'inbox'
     },
     {
@@ -166,7 +157,6 @@ var emails = [
         second: 40,
         millisecond: 735
       },
-      dateStamp: 20170615055140735,
       folder: 'inbox'
     }
   ];
@@ -179,8 +169,56 @@ var emailTable = document.getElementById('emailTable');
 var selectedFolder = "inbox";
 //compose email emailForm
 var emailForm = document.getElementById('emailForm');
-
+var col1Header = '';
+var col1 = '';
 //////////////////////////////END OF VARIABLES///////////////////////
+
+//sort emails array by words
+function sortByName(arg){
+  emails.sort(function(a,b){
+    var nameA = a[arg].toUpperCase();
+    var nameB = b[arg].toUpperCase();
+    if (nameA < nameB){
+      return -1;
+    }
+    if (nameA > nameB){
+      return 1;
+    }
+    return 0;
+  });
+  displayEmailList(selectedFolder);
+}
+
+//sort emails array by date
+function sortByDate(){
+  emails.sort(function(a,b){
+    return dateSort(a.date.year, b.date.year, dateSort(
+      a.date.month, b.date.month, dateSort(
+        a.date.day, b.date.day, dateSort(
+          a.date.hour, b.date.hour, dateSort(
+            a.date.minute, b.date.minute, dateSort(
+              a.date.second, b.date.second, dateSort(
+                a.date.millisecond, b.date.millisecond, 0
+              )
+            )
+          )
+        )
+      )
+    ));
+  });
+  displayEmailList(selectedFolder);
+}
+
+//date sort function
+function dateSort(arg1, arg2, tmpfunc){
+  if(arg1 > arg2){
+    return -1;
+  } else if (arg1 < arg2) {
+    return 1;
+  } else {
+    return tmpfunc;
+  }
+}
 
 //folder count function
 function folderCount(){
@@ -192,7 +230,7 @@ function folderCount(){
     sent: 0,
     deleted: 0
   };
-//increment allFolderCount by 1 for each folder matching
+  //increment allFolderCount by 1 for each folder matching
   emails.forEach(function(element) {
     switch (element.folder){
       case 'inbox':
@@ -238,11 +276,18 @@ function openEmail(arg) {
 }
 
 function displayEmailList(mailBox){
+  if (mailBox === 'inbox' || mailBox === 'junk' || mailBox === 'deleted'){
+    col1Header = 'From';
+    col1 = 'sender';
+  } else {
+    col1Header = 'To';
+    col1 = 'recipient';
+  }
   emailTable.innerHTML =
   `<tr id="emailTableHeader">
-		<th id="fromHeader">From</th>
-		<th id="subjectHeader">Subject</th>
-		<th id="dateHeader">Date</th>
+		<th id="fromHeader" onclick="sortByName(col1)">${col1Header}</th>
+		<th id="subjectHeader" onclick="sortByName('subject')">Subject</th>
+		<th id="dateHeader" onclick="sortByDate()">Date</th>
 	</tr>`;
   for(var i=0; i<emails.length; i++) {
     if(emails[i].folder === mailBox){
@@ -250,7 +295,7 @@ function displayEmailList(mailBox){
       emailTable.innerHTML +=
       // create onclick event for each row
           `<tr class="emailLine" onclick="openEmail(${i})">
-            <td><b>${emails[i].sender}</b></td>
+            <td><b>${emails[i][col1]}</b></td>
             <td><b>${emails[i].subject} &#8226</b>
             <span id='preview'>${emails[i].message}</span></td>
             <td><b>${date.month}/${date.day}/${date.year}</b></td>
@@ -289,6 +334,9 @@ function changeEmailToFolder(newFolder){
 //change selectedFolder
 function changeSelectedFolder(newFolder){
   selectedFolder = newFolder;
+  var cache = newFolder + 'Folder';
+  document.querySelector('.boldFolderTxt').classList.remove('boldFolderTxt');
+  document.getElementById(cache).className += 'boldFolderTxt';
   displayEmailList(newFolder);
 }
 
@@ -327,7 +375,7 @@ function addNewEmail(savedFolder){
   //add new email to the beginning of emails array
   emails.unshift(newEmail);
   //refresh the screen with updated information
-  displayEmailList();
+  displayEmailList(selectedFolder);
   folderCount();
   closeComposeDiv();
 }
@@ -350,10 +398,11 @@ function forward(){
 ////////////////////////////////END OF FUNCTIONS//////////////////////////////////////////
 
 // insert email rows into div ID emailRows
-displayEmailList('inbox');
+sortByDate();
+changeSelectedFolder('inbox');
 
 //add click event listner to closeEmailMsgDiv
-document.getElementById('closeEmailMsgDiv').addEventListener("click", function(){
+document.getElementById('closeEmailMsg').addEventListener("click", function(){
   //apply emailMsgOff class to Div #emailMsgDiv
   document.getElementById("emailMsgDiv").className = "emailMsgOff";
 });
@@ -369,7 +418,7 @@ document.getElementById("deleteBtn").addEventListener("click", function(){
 document.getElementById("junkBtn").addEventListener("click", function(){
   changeEmailToFolder('junk');
 });
-
+//inbox button to put email into inbox folder
 document.getElementById("inboxBtn").addEventListener("click", function(){
   changeEmailToFolder('inbox');
 });

@@ -47,8 +47,13 @@ body {
 }
 
 #folderTable tr td {
-    font-size: 19px;
+    font-size: 18px;
     padding: 4px;
+}
+
+#folderTable tr td.boldFolderTxt {
+  font-weight: bold;
+  font-size: 21px;
 }
 
 #composeNewMsg {
@@ -87,6 +92,10 @@ table {
   width: 20%;
 }
 
+#subjectHeader:hover, #dateHeader:hover, #fromHeader:hover {
+  text-decoration: underline;
+}
+
 #subjectHeader {
   width: 65%;
 }
@@ -97,6 +106,18 @@ table {
 
 #preview {
   font-size: 13px;
+}
+
+#subject {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+#closeEmailMsg {
+  width: 30px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
 }
 
 th {

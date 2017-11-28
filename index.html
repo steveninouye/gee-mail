@@ -1,18 +1,99 @@
 <html>
 	<head>
-		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
-    <script>
-      window.onload = function(){
-        // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE. 
-        // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
-        
-      };
-    </script>
+		<link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
 	</head>
 	<body>
-		<div class="container" id="main">
-			Build Me!
+		<div class="container" id="entirePage">
+<!-- header -->
+			<div id="header">
+				<div id="logo">
+					<img class="close" src="images/tempLogo.jpg" alt="Borrowed Logo" width="70px">
+				</div>
+				<div id="welcomeMessage">
+					Welcome to GeeMail
+				</div>
+			</div>
+
+
+<!-- main div -->
+<div id="main">
+
+<!-- left div for folders -->
+<div id="foldersDiv">
+	<table id="folderTable">
+		<tr id='inboxFolder' onclick="changeSelectedFolder('inbox')">
+			<td>Inbox (<span id="inboxMsgCount">0</span>)</td>
+		</tr>
+		<tr id='junkFolder' onclick="changeSelectedFolder('junk')">
+			<td>Junk Mail (<span id="junkMsgCount">0</span>)</td>
+		</tr>
+		<tr id='draftsFolder' onclick="changeSelectedFolder('drafts')">
+			<td>Drafts (<span id="draftsMsgCount">0</span>)</td>
+		</tr>
+		<tr id='sentFolder' onclick="changeSelectedFolder('sent')">
+			<td>Sent Items (<span id="sentMsgCount">0</span>)</td>
+		</tr>
+		<tr id='deletedFolder' onclick="changeSelectedFolder('deleted')">
+			<td>Deleted Items (<span id="deletedMsgCount">0</span>)</td>
+		</tr>
+		<tr id='compose'>
+			<td>
+				<button type="button" id="composeNewMsg" onclick="composeNewMsg()">Compose Email</button>
+			</td>
+	</table>
+</div>
+<!-- end of folders div -->
+
+
+<!-- email table -->
+<div id="emailDiv">
+<table id="emailTable">
+
+</table>
+</div>
+
+<!-- closing main div -->
+</div>
+
+
+<!-- off screen emailMessage div -->
+<div class="emailMsgOff" id="emailMsgDiv">
+	<div id="emailHeader">
+		<div id="leftEmailMsg">
+			<span id="subject"></span><br>
+			<span id="sender"></span>&nbsp;&lt;<span id="email"></span>&gt;<br>
+			<span id="date"></span>
 		</div>
+		<div id="emailBtns">
+			<button id="replyBtn" type="button" onclick="reply()">Reply</button>
+			<button id="forwardBtn" type="button" onclick="forward()">Forward</button>
+			<button id="inboxBtn" type="button">Inbox</button>
+			<button id="junkBtn" type="button">Junk</button>
+			<button id="deleteBtn" type="button">Delete</button>
+			<img id="closeEmailMsgDiv" src="images/close.png" width="40px">
+			<hr>
+		</div>
+	</div>
+	<div id="emailMsg">
+	</div>
+</div>
+<div class="emailMsgOff" id="composeDiv">
+	<form id="emailForm">
+		From: myemail@geemail.com <br>
+		To: <input type="text" name="recipient" size="45"><br>
+		Subject: <input type="text" name="subject" size="40"><br>
+		<button id="saveBtn" type="button" onclick="addNewEmail('drafts')">Save</button>
+		<button id="sendBtn" type="button" onclick="addNewEmail('sent')">Send</button>
+		<button id="discardBtn" type="button" onclick="closeComposeDiv()">Discard</button>
+		<hr>
+		<textarea name="message" cols="90" rows="30"></textarea>
+	</form>
+</div>
+
+
+<!-- closing entirePage div -->
+</div>
 	</body>
+<script type="text/javascript" src="js/mail-generator.js"></script>
 </html>

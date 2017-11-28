@@ -22,20 +22,20 @@
 <!-- left div for folders -->
 <div id="foldersDiv">
 	<table id="folderTable">
-		<tr id='inboxFolder' onclick="changeSelectedFolder('inbox')">
-			<td>Inbox (<span id="inboxMsgCount">0</span>)</td>
+		<tr onclick="changeSelectedFolder('inbox')">
+			<td id='inboxFolder' class="boldFolderTxt" >Inbox (<span id="inboxMsgCount">0</span>)</td>
 		</tr>
-		<tr id='junkFolder' onclick="changeSelectedFolder('junk')">
-			<td>Junk Mail (<span id="junkMsgCount">0</span>)</td>
+		<tr onclick="changeSelectedFolder('junk')">
+			<td id='junkFolder' >Junk Mail (<span id="junkMsgCount">0</span>)</td>
 		</tr>
-		<tr id='draftsFolder' onclick="changeSelectedFolder('drafts')">
-			<td>Drafts (<span id="draftsMsgCount">0</span>)</td>
+		<tr onclick="changeSelectedFolder('drafts')">
+			<td id='draftsFolder' >Drafts (<span id="draftsMsgCount">0</span>)</td>
 		</tr>
-		<tr id='sentFolder' onclick="changeSelectedFolder('sent')">
-			<td>Sent Items (<span id="sentMsgCount">0</span>)</td>
+		<tr onclick="changeSelectedFolder('sent')">
+			<td id='sentFolder' >Sent Items (<span id="sentMsgCount">0</span>)</td>
 		</tr>
-		<tr id='deletedFolder' onclick="changeSelectedFolder('deleted')">
-			<td>Deleted Items (<span id="deletedMsgCount">0</span>)</td>
+		<tr onclick="changeSelectedFolder('deleted')">
+			<td id='deletedFolder' >Deleted Items (<span id="deletedMsgCount">0</span>)</td>
 		</tr>
 		<tr id='compose'>
 			<td>
@@ -68,12 +68,13 @@
 		<div id="emailBtns">
 			<button id="replyBtn" type="button" onclick="reply()">Reply</button>
 			<button id="forwardBtn" type="button" onclick="forward()">Forward</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Move To:
 			<button id="inboxBtn" type="button">Inbox</button>
 			<button id="junkBtn" type="button">Junk</button>
 			<button id="deleteBtn" type="button">Delete</button>
-			<img id="closeEmailMsgDiv" src="images/close.png" width="40px">
 			<hr>
 		</div>
+		<img id="closeEmailMsg" src="images/close.png">
 	</div>
 	<div id="emailMsg">
 	</div>

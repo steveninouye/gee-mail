@@ -1,7 +1,297 @@
 <html>
 	<head>
+		<script src="js/mail-generator.js"></script>
 		<link href="css/style.css" rel="stylesheet" media="screen">
-		<link href="https://fonts.googleapis.com/css?family=Acme" rel="stylesheet">
+    <script>
+      window.onload = function(){
+        // ALL OF YOUR JAVASCRIPT CODE SHOULD GO HERE.
+        // We have to use window.onload so your JavaScript doesn't execute until the page has loaded and all HTML has been downloaded to your browser
+
+
+
+
+				//add folder key to every object in the array
+				window.emails = geemails.map(function(el){
+					var o =Object.assign({}, el);
+					o.folder = 'inbox';
+					return o;
+				});
+				//create a selectedEmail variable
+				window.selectedEmail = false;
+				//create a shortcut for div ID emailList
+				window.emailTable = document.getElementById('emailTable');
+				//create selected folder VARIABLE
+				window.selectedFolder = "inbox";
+				//compose email emailForm
+				window.emailForm = document.getElementById('emailForm');
+				window.col1Header = '';
+				window.col1 = '';
+				//////////////////////////////END OF VARIABLES///////////////////////
+
+				//sort emails array by words
+				window.sortByName = function sortByName(arg){
+				  emails.sort(function(a,b){
+				    var nameA = a[arg].toUpperCase();
+				    var nameB = b[arg].toUpperCase();
+				    if (nameA < nameB){
+				      return -1;
+				    }
+				    if (nameA > nameB){
+				      return 1;
+				    }
+				    return 0;
+				  });
+				  displayEmailList(selectedFolder);
+				}
+
+				//sort emails array by date
+				window.sortByDate = function sortByDate(){
+				  emails.sort(function(a,b){
+				    return dateSort(a.date.getFullYear(), b.date.getFullYear(), dateSort(
+				      a.date.getMonth(), b.date.getMonth(), dateSort(
+				        a.date.getDate(), b.date.getDate(), dateSort(
+				          a.date.getHours(), b.date.getHours(), dateSort(
+				            a.date.getMinutes(), b.date.getMinutes(), 0
+				          )
+				        )
+				      )
+				    ));
+				  });
+				  displayEmailList(selectedFolder);
+				}
+
+				//date sort function
+				window.dateSort = function dateSort(arg1, arg2, tmpfunc){
+				  if(arg1 > arg2){
+				    return -1;
+				  } else if (arg1 < arg2) {
+				    return 1;
+				  } else {
+				    return tmpfunc;
+				  }
+				}
+
+				//folder count function
+				window.folderCount = function folderCount(){
+				  //create folderCount object
+				  var allFolderCount = {
+				    inbox: 0,
+				    junk: 0,
+				    drafts: 0,
+				    sent: 0,
+				    deleted: 0
+				  };
+				  //increment allFolderCount by 1 for each folder matching
+				  emails.forEach(function(element) {
+				    switch (element.folder){
+				      case 'inbox':
+				        allFolderCount.inbox++;
+				        break;
+				      case 'junk':
+				        allFolderCount.junk++;
+				        break;
+				      case 'drafts':
+				        allFolderCount.drafts++;
+				        break;
+				      case 'sent':
+				        allFolderCount.sent++;
+				        break;
+				      case 'deleted':
+				        allFolderCount.deleted++;
+				        break;
+				    }
+				  });
+				  //insert counts into corresponding folder spans
+				  document.getElementById('inboxMsgCount').innerHTML = allFolderCount.inbox;
+				  document.getElementById('junkMsgCount').innerHTML = allFolderCount.junk;
+				  document.getElementById('draftsMsgCount').innerHTML = allFolderCount.drafts;
+				  document.getElementById('sentMsgCount').innerHTML = allFolderCount.sent;
+				  document.getElementById('deletedMsgCount').innerHTML = allFolderCount.deleted;
+				}
+
+				// make integer 2 digits
+				window.pad = function pad(value) {
+					if(value < 10) {
+						return '0' + value;
+					} else {
+						return value;
+					}
+				}
+
+				//openEmail function
+				window.openEmail = function openEmail(arg) {
+				  //create div off screen
+				    //fill in information of clicked email
+				    document.querySelector("#subject").innerHTML = emails[arg].subject;
+				    document.querySelector("#sender").innerHTML = emails[arg].sender;
+				    var date = emails[arg].date;
+				    document.querySelector("#date").innerHTML = `${date.getMonth()}/${date.getDate()}/${date.getFullYear()} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+				    document.querySelector("#emailMsg").innerHTML = emails[arg].body;
+				  //save email index to selectedEmail variable
+				    selectedEmail = emails[arg];
+				  //apply emailMsgOn class to Div #emailMsgDiv
+				    document.getElementById("emailMsgDiv").className = "emailMsgOn";
+				    document.getElementById("composeDiv").className = "emailMsgOff";
+				}
+
+				window.displayEmailList = function displayEmailList(mailBox){
+				  if (mailBox === 'inbox' || mailBox === 'junk' || mailBox === 'deleted'){
+				    col1Header = 'From';
+				    col1 = 'sender';
+				  } else {
+				    col1Header = 'To';
+				    col1 = 'recipient';
+				  }
+				  emailTable.innerHTML =
+				  `<tr id="emailTableHeader">
+						<th id="fromHeader" onclick="sortByName(col1)">${col1Header}</th>
+						<th id="subjectHeader" onclick="sortByName('subject')">Subject</th>
+						<th id="dateHeader" onclick="sortByDate()">Date</th>
+					</tr>`;
+				  for(var i=0; i<emails.length; i++) {
+				    if(emails[i].folder === mailBox){
+				      var date = emails[i].date;
+				      emailTable.innerHTML +=
+				      // create onclick event for each row
+				          `<tr class="emailLine" onclick="openEmail(${i})">
+				            <td><b>${emails[i][col1]}</b></td>
+				            <td><b>${emails[i].subject} &#8226</b>
+				            <span id='preview'>${emails[i].body}</span></td>
+				            <td><b>${date.getMonth()}/${date.getDate()}/${date.getFullYear()}</b></td>
+				          </tr>`;
+				    }
+				  }
+				}
+
+				//move email into folder
+				window.buttonToFolder = function buttonToFolder(button, folder){
+				  //button to put email into deleted folders
+				  document.getElementById(button).addEventListener("click", function(){
+				  //change folder to deleted
+				    selectedEmail.folder = folder;
+				  //close close EmailMsgDiv
+				    document.getElementById("emailMsgDiv").className = "emailMsgOff";
+				  //run folderCount function
+				    folderCount();
+				    displayEmailList(selectedFolder);
+				  });
+				}
+
+				// change email to folder
+				window.changeEmailToFolder = function changeEmailToFolder(newFolder){
+				  //change folder to deleted
+				    selectedEmail.folder = newFolder;
+				  //close close EmailMsgDiv
+				    document.getElementById("emailMsgDiv").className = "emailMsgOff";
+				  //run folderCount function
+				    folderCount();
+				    displayEmailList(selectedFolder);
+				    //close close EmailMsgDiv
+				      document.getElementById("emailMsgDiv").className = "emailMsgOff";
+				}
+
+				//change selectedFolder
+				window.changeSelectedFolder = function changeSelectedFolder(newFolder){
+				  selectedFolder = newFolder;
+				  var cache = newFolder + 'Folder';
+				  document.querySelector('.boldFolderTxt').classList.remove('boldFolderTxt');
+				  document.getElementById(cache).className += 'boldFolderTxt';
+				  displayEmailList(newFolder);
+				}
+
+				//compose composeNewMsg
+				window.composeNewMsg = function composeNewMsg(){
+				  document.getElementById("emailMsgDiv").className = "emailMsgOff";
+				  document.getElementById('composeDiv').className = "emailMsgOn";
+				}
+
+				//close composeNewMsg pane
+				window.closeComposeDiv = function closeComposeDiv(){
+				  document.getElementById('emailForm').reset();
+				  document.getElementById('composeDiv').className = "emailMsgOff";
+				}
+
+				//add new email to emails array
+				window.addNewEmail = function addNewEmail(savedFolder){
+				  var newEmail = {
+				    sender: 'This Is Me',
+				    subject: emailForm.subject.value,
+				    body: emailForm.body.value,
+				    date: new Date(),
+				    folder: savedFolder,
+				    recipient: emailForm.recipient.value
+				  };
+				  //add new email to the beginning of emails array
+				  emails.unshift(newEmail);
+				  //refresh the screen with updated information
+				  displayEmailList(selectedFolder);
+				  folderCount();
+				  closeComposeDiv();
+				}
+
+				//reply button FUNCTION
+				window.reply = function reply(){
+				  //element.setAttribute(value, text)
+				  document.getElementsByName('subject')[0].value = 'RE:' + selectedEmail.subject;
+				  document.getElementsByName('body')[0].value = "\n-------------------------------\n" + selectedEmail.body;
+				  document.getElementById('composeDiv').className = "emailMsgOn";
+				}
+
+				//forward button function
+				window.forward = function forward(){
+				  document.getElementsByName('subject')[0].value = 'FW:' + selectedEmail.subject;
+				  document.getElementsByName('body')[0].value = "\n-------------------------------\n" + selectedEmail.body;
+				  document.getElementById('composeDiv').className = "emailMsgOn";
+				}
+				////////////////////////////////END OF FUNCTIONS//////////////////////////////////////////
+
+				// insert email rows into div ID emailRows
+				sortByDate();
+				changeSelectedFolder('inbox');
+
+				//add click event listner to closeEmailMsgDiv
+				document.getElementById('closeEmailMsg').addEventListener("click", function(){
+				  //apply emailMsgOff class to Div #emailMsgDiv
+				  document.getElementById("emailMsgDiv").className = "emailMsgOff";
+				});
+
+				//run folderCount
+				folderCount();
+
+				//delete button to put email into deleted folders
+				document.getElementById("deleteBtn").addEventListener("click", function(){
+				  changeEmailToFolder('deleted');
+				});
+				//junk button to put email into junk folder
+				document.getElementById("junkBtn").addEventListener("click", function(){
+				  changeEmailToFolder('junk');
+				});
+				//inbox button to put email into inbox folder
+				document.getElementById("inboxBtn").addEventListener("click", function(){
+				  changeEmailToFolder('inbox');
+				});
+
+
+				//setInterval FUNCTION to call getNewMessage every 10 seconds
+				setInterval(function(){
+					var newMsg = getNewMessage();
+					//add folder key and value as inbox
+					newMsg.folder = 'inbox';
+					//add new message at the beginning of the emails array
+					emails.unshift(newMsg);
+					//refresh the folder count
+					folderCount();
+					//refresh the selected folder screen
+					displayEmailList(selectedFolder);
+				},10000);
+
+
+
+
+
+
+      };
+    </script>
 	</head>
 	<body>
 		<div class="container" id="entirePage">
@@ -62,7 +352,7 @@
 	<div id="emailHeader">
 		<div id="leftEmailMsg">
 			<span id="subject"></span><br>
-			<span id="sender"></span>&nbsp;&lt;<span id="email"></span>&gt;<br>
+			From: <span id="sender"></span><br>
 			<span id="date"></span>
 		</div>
 		<div id="emailBtns">
@@ -79,6 +369,8 @@
 	<div id="emailMsg">
 	</div>
 </div>
+
+<!-- off screen composeMSg Div -->
 <div class="emailMsgOff" id="composeDiv">
 	<form id="emailForm">
 		From: myemail@geemail.com <br>
@@ -88,7 +380,7 @@
 		<button id="sendBtn" type="button" onclick="addNewEmail('sent')">Send</button>
 		<button id="discardBtn" type="button" onclick="closeComposeDiv()">Discard</button>
 		<hr>
-		<textarea name="message" cols="90" rows="30"></textarea>
+		<textarea name="body" cols="90" rows="30"></textarea>
 	</form>
 </div>
 
@@ -96,5 +388,4 @@
 <!-- closing entirePage div -->
 </div>
 	</body>
-<script type="text/javascript" src="js/mail-generator.js"></script>
 </html>
